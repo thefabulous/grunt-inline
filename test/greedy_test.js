@@ -25,22 +25,22 @@ exports.inline = function(test) {
     test.expect(4);
 
     assertFileEquality(test,
-      'tmp/img_greedy.min.html',
+      'tmp/test/dist/img_greedy.min.html',
       'test/expected/img_greedy.min.html',
       'Should compile two image target without newline characters');
 
     assertFileEquality(test,
-      'tmp/css_greedy.min.html',
+      'tmp/test/dist/css_greedy.min.html',
       'test/expected/css_greedy.min.html',
       'Should compile two link target without newline characters');
 
     assertFileEquality(test,
-      'tmp/html_greedy.min.html',
+      'tmp/test/dist/html_greedy.min.html',
       'test/expected/html_greedy.min.html',
       'Should compile two inline target without newline characters');
 
     assertFileEquality(test,
-      'tmp/script_greedy.min.html',
+      'tmp/test/dist/script_greedy.min.html',
       'test/expected/script_greedy.min.html',
       'Should compile two script target without newline characters');
 

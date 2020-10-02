@@ -174,6 +174,30 @@ module.exports = function(grunt) {
 			grunt.log.debug('ret = : ' + ret +'\n');
 			
 			return ret;	
+		}).replace(/<img.+?srcset=["']([^"':]+?)["'].*?\/?\s*?>/g, function(matchedWord, src){
+			var	ret = matchedWord;
+
+            var srcsetValueTab = src.split(' ')
+
+            srcsetValueTab.forEach(function(element, index){
+                var resolvedElement = element
+                   if(!grunt.file.isPathAbsolute(element) && element.indexOf(options.tag)!=-1){
+                        var inlineFilePath = path.resolve( path.dirname(filepath), element ).replace(/\?.*$/, '');	// 将参数去掉
+
+                        if( grunt.file.exists(inlineFilePath) ){
+                            resolvedElement = new datauri(inlineFilePath).content;
+                        }else{
+                            grunt.log.error("Couldn't find " + inlineFilePath + '!');
+                        }
+                    }
+
+                this[index] = resolvedElement
+            }, srcsetValueTab);
+
+            ret = matchedWord.replace(src, srcsetValueTab.join(' '));
+            grunt.log.debug('ret = : ' + ret +'\n');
+
+			return ret;
 		});
 
 		return fileContent;
