@@ -23,6 +23,25 @@ and css blocks are converted to base-64 data: urls.
 By default, only urls marked with `__inline` are converted, however this
 behavior can be overrided via the `tag:` option.
 
+## How to publish to npm
+
+1. Update version in `package.json` according to semantic versioning
+
+2. Create a git tag according to semantic versioning
+
+3. login to The Fabulous npm account through the command line. Ask Amine L for credentials if you don't have access.
+```bash
+npm login
+```
+4. You’ll be prompted to enter the username, password, and email address.
+
+5. Once logged in, you can publish the package
+
+```bash
+npm publish
+```
+
+👉 npm package page: https://www.npmjs.com/package/grunt-inline-fabulous
 
 ## Getting Started
 
