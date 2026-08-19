@@ -58,6 +58,19 @@ module.exports = function(grunt) {
 		return url.match(/^'?https?:\/\//) || url.match(/^\/\//);
 	}
 
+	// A src marked for inlining that points at a remote host can never be inlined: every inline
+	// branch reads from the local filesystem via path.resolve and bails on isRemotePath first.
+	// Without this warning the tag is returned untouched and the marker ships in the output, which
+	// looks identical to a page that was inlined correctly. Say so instead of failing silently.
+	function warnIfRemoteInlineTag( src, tagName, options ){
+		if( isRemotePath(src) && src.indexOf(options.tag) != -1 ){
+			grunt.log.error(
+				'Cannot inline remote <' + tagName + '> ' + src + ' — ' +
+				options.tag + ' only works for local files. It will be left as an external request.'
+			);
+		}
+	}
+
 	function isBase64Path( url ){
 		return url.match(/^'?data.*base64/);
 	}
@@ -128,6 +141,7 @@ module.exports = function(grunt) {
 		}).replace(/<script.+?src=["']([^"']+?)["'].*?>\s*<\/script>/g, function(matchedWord, src){
 			var ret = matchedWord;
 
+			warnIfRemoteInlineTag(src, 'script', options);
 			if(!isRemotePath(src) && src.indexOf(options.tag)!=-1){
 				var inlineFilePath = path.resolve( path.dirname(filepath), src ).replace(/\?.*$/, '');	// 将参数去掉
 				var c = options.uglify ? UglifyJS.minify(inlineFilePath).code : grunt.file.read( inlineFilePath );
@@ -144,6 +158,7 @@ module.exports = function(grunt) {
 		}).replace(/<link.+?href=["']([^"']+?)["'].*?\/?>/g, function(matchedWord, src){
 			var ret = matchedWord;
 			
+			warnIfRemoteInlineTag(src, 'link', options);
 			if(!isRemotePath(src) && src.indexOf(options.tag)!=-1){
 
 				var inlineFilePath = path.resolve( path.dirname(filepath), src ).replace(/\?.*$/, '');	// 将参数去掉	
